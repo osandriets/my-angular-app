@@ -50,16 +50,38 @@ export class HeroEditComponent {
 
   onSave(): void {
     if(this.form.valid){
-      // if(this.data.uuid) {
-      //   this.heroService.edit(this.form.value);
-      // } else {
-      //   this.heroService.add(this.form.value);
-      // }
-
-      this.dialogRef.close(this.form.value);
+      if(this.data.uuid) {
+        this.saveHero(this.form.value).then();
+      } else {
+        this.createHero(this.form.value).then();
+      }
     } else {
       this.form.markAllAsTouched();
     }
 
+  }
+
+  async createHero(hero: Partial<HeroInterface>) {
+    try {
+      const newHero = await this.heroService.createHero(hero);
+      this.dialogRef.close(newHero);
+    }
+    catch (err) {
+      console.error(err);
+      alert(`Error creating the hero.`)
+    }
+
+  }
+
+  async saveHero(changes: Partial<HeroInterface>) {
+    try {
+      const updatedHero =
+        await this.heroService.saveHero(changes.nameLabel ?? '', changes);
+      this.dialogRef.close(updatedHero);
+    }
+    catch (err) {
+      console.error(err);
+      alert(`Failed to save the hero.`);
+    }
   }
 }

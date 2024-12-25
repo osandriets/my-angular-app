@@ -6,7 +6,8 @@
   <mat-form-field>
     <mat-label>Name</mat-label>
     <input matInput
-           formControlName="nameLabel">
+           formControlName="nameLabel"
+           [readonly]="data.uuid">
   </mat-form-field>
 
   <mat-form-field>

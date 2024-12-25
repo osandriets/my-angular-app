@@ -65,7 +65,7 @@ export class HeroesListComponent implements OnInit{
   readonly dialog = inject(MatDialog);
 
   ngOnInit(): void {
-    this.loadCourses().then();
+    this.loadHeroes().then();
   }
 
   onSortData(sort: Sort): void {
@@ -124,13 +124,13 @@ export class HeroesListComponent implements OnInit{
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // this.heroService.delete(result.uuid);
+        // const heroes = this.heroes();
+        //
+        // this.heroes.set([
+        //   ...heroes.filter(h => h.uuid !== result.uuid)
+        // ]);
 
-        const heroes = this.heroes();
-
-        this.heroes.set([
-          ...heroes.filter(h => h.uuid !== result.uuid)
-        ]);
+        this.onHeroDeleted(result.nameLabel).then()
       }
     });
   }
@@ -147,13 +147,28 @@ export class HeroesListComponent implements OnInit{
     this.search.set(event);
   }
 
-  async loadCourses() {
+  async loadHeroes() {
     try {
-      const courses = await this.heroService.loadAllCourses();
-      this.heroes.set(courses);
+      const heroes = await this.heroService.loadAllHeroes();
+      this.heroes.set(heroes);
     }
     catch(err) {
       console.error(err);
+    }
+  }
+
+  async onHeroDeleted(heroesLabel: string) {
+    try {
+      await this.heroService.deleteHero(heroesLabel);
+      const heroes = this.heroes();
+
+      const newHeroes = heroes
+        .filter(h => h.nameLabel !== heroesLabel)
+      this.heroes.set(newHeroes);
+    }
+    catch (err) {
+      console.error(err)
+      alert(`Error deleting hero.`)
     }
   }
 }
