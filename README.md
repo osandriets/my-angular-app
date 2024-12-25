@@ -2,6 +2,14 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
 
+# Running the local backend server
+
+In order to be able to provide more realistic examples, we will need in our playground a small REST API backend server.
+
+We can start the sample application backend with the following command:
+
+    npm run server
+
 ## Development server
 
 To start a local development server, run:
