@@ -6,7 +6,8 @@ import { HeroInterface } from '../interfaces/hero.interface';
 
 @Injectable()
 export class HeroService {
-  private URL = '../wikipedia_marvel_data.json';
+  // private URL = '../wikipedia_marvel_data.json';
+  private URL = 'http://localhost:9000/api/courses';
 
   readonly http = inject(HttpClient);
 
