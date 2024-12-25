@@ -26,20 +26,21 @@ export class HeroEditComponent {
   readonly heroService = inject(HeroService);
   readonly fb = inject(UntypedFormBuilder);
 
+  dialogRef = inject(MatDialogRef);
+  data: HeroInterface = inject(MAT_DIALOG_DATA);
+
   constructor(
-    public dialogRef: MatDialogRef<HeroEditComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: HeroInterface,
   ) {
 
     this.form = this.fb.group({
-      uuid: [data.uuid ?? null],
-      nameLabel: [data.nameLabel ?? '', [Validators.required]],
-      genderLabel: [data.genderLabel ?? '', [Validators.required]],
-      citizenshipLabel: [data.citizenshipLabel ?? '', [Validators.required]],
-      skillsLabel: [data.skillsLabel ?? '', [Validators.required]],
-      occupationLabel: [data.occupationLabel ?? '', [Validators.required]],
-      memberOfLabel: [data.memberOfLabel ?? '', [Validators.required]],
-      creatorLabel: [data.creatorLabel ?? '', [Validators.required]],
+      uuid: [this.data.uuid ?? null],
+      nameLabel: [this.data.nameLabel ?? '', [Validators.required]],
+      genderLabel: [this.data.genderLabel ?? '', [Validators.required]],
+      citizenshipLabel: [this.data.citizenshipLabel ?? '', [Validators.required]],
+      skillsLabel: [this.data.skillsLabel ?? '', [Validators.required]],
+      occupationLabel: [this.data.occupationLabel ?? '', [Validators.required]],
+      memberOfLabel: [this.data.memberOfLabel ?? '', [Validators.required]],
+      creatorLabel: [this.data.creatorLabel ?? '', [Validators.required]],
     });
   }
 

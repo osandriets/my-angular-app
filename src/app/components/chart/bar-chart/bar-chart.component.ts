@@ -73,11 +73,6 @@ export class BarChartComponent<EntityType = ChartInterface> implements AfterView
       .paddingInner(this.paddingInner)
       .paddingOuter(this.paddingOuter);
 
-    // console.log('[BarChart] data = ', this.data);
-    // console.log('[BarChart] xValues = ', xValues);
-    // console.log('[BarChart] Range = ', xScale.range());
-    // console.log('[BarChart] Bandwidth: ' + xScale.bandwidth());
-
     const yScale = d3.scaleLinear().range([this.height, 0]).domain([0, maxYValue]);
 
     this.bars = this.data.map((d: any) => {
@@ -91,5 +86,4 @@ export class BarChartComponent<EntityType = ChartInterface> implements AfterView
     });
 
   }
-
 }

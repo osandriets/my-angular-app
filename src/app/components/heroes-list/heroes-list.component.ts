@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { MatSortModule, Sort, SortDirection } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
@@ -8,15 +8,13 @@ import { HeroDetailsComponent } from '../hero-details/hero-details.component';
 import { MatIconModule } from '@angular/material/icon';
 import { AlertComponent } from '../alert/alert.component';
 import { HeroEditComponent } from '../hero-edit/hero-edit.component';
-import { BehaviorSubject, combineLatest, map, Observable, Subject } from 'rxjs';
 import { HeroService } from '../../services/hero.service';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { HeroInterface } from '../../interfaces/hero.interface';
 import { HeroSearchComponent } from '../hero-search/hero-search.component';
 import { KpiComponent } from '../kpi/kpi.component';
 import { ChartComponent } from '../chart/chart.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-heroes-list',
@@ -24,7 +22,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   styleUrls: ['./heroes-list.component.scss'],
   imports: [
     MatTableModule, MatSortModule, MatChipsModule, MatButtonModule, MatIconModule,
-    NgIf, AsyncPipe, MatInputModule, HeroSearchComponent, KpiComponent, ChartComponent,
+    NgIf, MatInputModule, HeroSearchComponent, KpiComponent, ChartComponent,
   ],
   providers: [
     HeroService,
@@ -35,9 +33,6 @@ export class HeroesListComponent implements OnInit{
   heroes = signal<HeroInterface[]>([]);
   sort = signal<any>({ active: 'nameLabel', direction: 'asc' });
   search = signal<string[]>([]);
-
-  data$!: Observable<HeroInterface[]>;
-  heroData$!: Observable<HeroInterface[]>;
 
   displayedColumns: string[] = [
     'nameLabel', 'genderLabel', 'citizenshipLabel', 'skillsLabel',
@@ -72,11 +67,7 @@ export class HeroesListComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.loadCourses();
-
-    // this.heroService.load();
-
-    // this.heroData$ = this.heroService.data$;
+    this.loadCourses().then();
 
     // effect(() => {
     //   console.log(`beginnersList: `, this.advancedCourses())

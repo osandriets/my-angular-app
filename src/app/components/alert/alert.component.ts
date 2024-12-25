@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -21,11 +21,8 @@ import { MatButton } from '@angular/material/button';
   ],
 })
 export class AlertComponent {
-
-  constructor(
-    public dialogRef: MatDialogRef<AlertComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: HeroInterface,
-  ) {}
+  dialogRef = inject(MatDialogRef);
+  data: HeroInterface = inject(MAT_DIALOG_DATA);
 
   onNoClick(): void {
     this.dialogRef.close();
