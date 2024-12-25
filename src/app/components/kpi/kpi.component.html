@@ -1,0 +1,27 @@
+@if (getUniqueValues(data) | keyvalue; as items) {
+  @if (data.length === items.length) {
+
+    <h3 class="color-accept">{{ data.length }}</h3>
+    <p>unique values</p>
+
+  } @else {
+    @if (total(items); as total) {
+      @for (item of items; track item.key; let idx = $index, e = $even) {
+        @if (idx < 2) {
+
+          {{ item.key }}: {{ item.value * 100/total | number: '1.0-0' }}%
+
+        }
+      }
+
+      @if (items.length > 2) {
+
+
+        <div class="color-muted pt-20">
+          Others: {{ (total -  items[0].value - items[1].value)*100/total | number: '1.0-0'}}%
+        </div>
+
+      }
+    }
+  }
+}

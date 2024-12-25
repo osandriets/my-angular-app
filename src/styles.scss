@@ -1,4 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 24px; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// helpers
+.mb-24 {
+  margin-bottom: 24px;
+}
+
+//
+mat-form-field {
+  width: 100%;
+}
+
+
+.mat-warn {
+  background-color: red !important;
+  color: #fff;
+}
+
+.color-accept {
+  color: #0095ff !important;
+}
+
+.color-muted {
+  color: #cccccc !important;
+}
+
+.pt-20{
+  padding-top: 20px;
+}

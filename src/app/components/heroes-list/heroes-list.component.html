@@ -1,0 +1,225 @@
+<ng-container *ngIf="{
+  items: data$ | async,
+  heroData: heroData$ | async,
+  sort: sort$ | async,
+  search: search$ | async
+} as data">
+
+  <app-hero-search [search]="data.search || []"
+                   [options]="getNames(data.heroData)"
+                   (setSearch)="setSearch($event)">
+  </app-hero-search>
+
+  <div class="mb-24">
+    <button mat-raised-button
+            (click)="onEdit($event)">
+      Create hero
+    </button>
+  </div>
+
+  <table [dataSource]="data.items || []"
+         [matSortActive]="matSortActive"
+         [matSortDirection]="matSortDirection"
+         mat-table
+         matSort
+         matSortDisableClear
+         class="mat-elevation-z8"
+         (matSortChange)="onSortData($event)">
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="nameLabelChart">
+      <th *matHeaderCellDef
+          mat-header-cell>
+        <app-kpi *ngIf="data.items?.length"
+                 [data]="data.items || []"
+                 field="nameLabel"></app-kpi>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="nameLabel">
+      <th *matHeaderCellDef
+          mat-header-cell
+          mat-sort-header
+          sortActionDescription="Sort by name">
+        Name
+      </th>
+      <td *matCellDef="let element"
+          mat-cell>
+        {{element.nameLabel}}
+      </td>
+    </ng-container>
+
+    <!-- Gender Column -->
+    <ng-container matColumnDef="genderLabelChart">
+      <th *matHeaderCellDef
+          mat-header-cell>
+        <app-kpi *ngIf="data.items?.length"
+                 [data]="data.items || []"
+                 field="genderLabel"></app-kpi>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="genderLabel">
+      <th *matHeaderCellDef
+          mat-header-cell
+          mat-sort-header
+          sortActionDescription="Sort by gender">
+        Gender
+      </th>
+      <td *matCellDef="let element"
+          mat-cell>
+        {{element.genderLabel}}
+      </td>
+    </ng-container>
+
+    <!-- Citizenship Column -->
+    <ng-container matColumnDef="citizenshipLabelChart">
+      <th *matHeaderCellDef
+          mat-header-cell>
+        <app-chart *ngIf="data.items?.length"
+                   [data]="data.items || []"
+                   field="citizenshipLabel"></app-chart>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="citizenshipLabel">
+      <th *matHeaderCellDef
+          mat-header-cell
+          mat-sort-header
+          sortActionDescription="Sort by Citizenship">
+        Citizenship
+      </th>
+      <td *matCellDef="let element"
+          mat-cell>
+        {{element.citizenshipLabel}}
+      </td>
+    </ng-container>
+
+    <!-- Skills Column -->
+    <ng-container matColumnDef="skillsLabelChart">
+      <th *matHeaderCellDef
+          mat-header-cell>
+        <app-chart *ngIf="data.items?.length"
+                   [data]="data.items || []"
+                   field="skillsLabel"></app-chart>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="skillsLabel">
+      <th *matHeaderCellDef
+          mat-header-cell
+          mat-sort-header
+          sortActionDescription="Sort by skills">
+        Skills
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{element.skillsLabel}}
+      </td>
+    </ng-container>
+
+    <!-- Occupation Column -->
+    <ng-container matColumnDef="occupationLabelChart">
+      <th *matHeaderCellDef
+          mat-header-cell>
+        <app-chart *ngIf="data.items?.length"
+                   [data]="data.items || []"
+                   field="occupationLabel"></app-chart>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="occupationLabel">
+      <th *matHeaderCellDef
+          mat-header-cell
+          mat-sort-header
+          sortActionDescription="Sort by occupation">
+        Occupation
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{element.occupationLabel}}
+      </td>
+    </ng-container>
+
+    <!-- MemberOf Column -->
+    <ng-container matColumnDef="memberOfLabelChart">
+      <th *matHeaderCellDef
+          mat-header-cell>
+        <app-chart *ngIf="data.items?.length"
+                   [data]="data.items || []"
+                   field="memberOfLabel"></app-chart>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="memberOfLabel">
+      <th *matHeaderCellDef
+          mat-header-cell
+          mat-sort-header
+          sortActionDescription="Sort by memberOf">
+        Member Of
+      </th>
+      <td *matCellDef="let element"
+          mat-cell>
+        {{element.memberOfLabel}}
+      </td>
+    </ng-container>
+
+    <!-- Creator Column -->
+    <ng-container matColumnDef="creatorLabelChart">
+      <th *matHeaderCellDef
+          mat-header-cell>
+        <app-chart *ngIf="data.items?.length"
+                   [data]="data.items || []"
+                   field="creatorLabel"></app-chart>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="creatorLabel">
+      <th *matHeaderCellDef
+          mat-header-cell
+          mat-sort-header
+          sortActionDescription="Sort by creator">
+        Creator
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{element.creatorLabel}}
+      </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actionsChart">
+      <th *matHeaderCellDef
+          mat-header-cell></th>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef
+          mat-header-cell>
+        Actions
+      </th>
+      <td *matCellDef="let element"
+          width="128px"
+          mat-cell>
+        <button mat-icon-button
+                color="primary"
+                aria-label="edit"
+                (click)="onEdit($event, element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button
+                color="accent"
+                aria-label="delete"
+                (click)="onDelete($event, element)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsChart"></tr>
+
+    <tr *matRowDef="let row; columns: displayedColumns;"
+        mat-row
+        class="cursor-pointer"
+        (click)="showDetails(row)">
+    </tr>
+  </table>
+</ng-container>

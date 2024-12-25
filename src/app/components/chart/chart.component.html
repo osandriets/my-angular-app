@@ -1,0 +1,9 @@
+<ng-container *ngIf="charts(data, field) as cha">
+  <ng-container *ngIf="cha.length <= 5; else bar">
+    <app-pie-chart [data]="cha"></app-pie-chart>
+  </ng-container>
+
+  <ng-template #bar>
+    <app-bar-chart [data]="cha"></app-bar-chart>
+  </ng-template>
+</ng-container>
