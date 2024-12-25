@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, output, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -22,9 +22,10 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   ],
 })
 export class HeroSearchComponent {
-  @Input() search: string[] = [];
-  @Input() options: string[] = [];
-  @Output() setSearch = new EventEmitter<string[]>();
+  search = input.required<string[]>();
+  options = input.required<string[]>();
+
+  setSearch = output<string[]>();
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
   searchCtrl = new FormControl('');
@@ -33,38 +34,39 @@ export class HeroSearchComponent {
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
+    const options = this.options();
+    const option = options.find(o => o.toLowerCase() === value.toLowerCase());
 
-    // Add new option
-    if(value && this.options.includes(value)) {
-      this.search.push(value);
-      this.setSearch.emit(this.search);
+    if(value && option) {
+      const search = this.search();
 
-      // Clear the input value
-      event.chipInput.clear();
+      this.setSearch.emit([...search, option]);
+      this.nameInput.nativeElement.value = '';
       this.searchCtrl.setValue(null);
     }
-
   }
 
-  remove(fruit: string): void {
-    const index = this.search.indexOf(fruit);
+  remove(hero: string): void {
+    const search = this.search();
+    const index = search.filter(s=> s !== hero);
 
-    if(index >= 0) {
-      this.search.splice(index, 1);
-      this.setSearch.emit(this.search);
-    }
+    this.setSearch.emit(index);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.search.push(event.option.viewValue);
-    this.setSearch.emit(this.search);
+    const search = this.search();
+
+    this.setSearch.emit([...search, event.option.viewValue]);
     this.nameInput.nativeElement.value = '';
     this.searchCtrl.setValue(null);
   }
 
   filteredOptions(v: string): string[] {
-    return this.options
+    const search = this.search();
+    const options = this.options();
+
+    return options
       .filter(option => option.toLowerCase().includes(v))
-      .filter(option => !this.search.length || !this.search.includes(option));
+      .filter(option => !search.length || !search.includes(option));
   }
 }

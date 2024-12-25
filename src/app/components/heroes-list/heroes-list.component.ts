@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { MatSortModule, Sort, SortDirection } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
@@ -31,6 +31,11 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   ]
 })
 export class HeroesListComponent implements OnInit{
+
+  heroes = signal<HeroInterface[]>([]);
+  sort = signal<any>({ active: 'nameLabel', direction: 'asc' });
+  search = signal<string[]>([]);
+
   data$!: Observable<HeroInterface[]>;
   heroData$!: Observable<HeroInterface[]>;
 
@@ -44,11 +49,19 @@ export class HeroesListComponent implements OnInit{
   matSortActive = 'nameLabel';
   matSortDirection: SortDirection = 'asc';
 
-  private _sort: Subject<any> = new BehaviorSubject({ active: 'nameLabel', direction: 'asc' });
-  sort$: Observable<any> = this._sort.asObservable();
+  advancedCourses = computed(() => {
+    const heroes = this.heroes();
+    const sort = this.sort();
+    const search = this.search();
+    return heroes
+      .filter(d => !search.length || search.includes(d.nameLabel))
+      .sort((a: any, b: any) => {
+        return sort.direction === 'asc'
+          ? a[sort.active].localeCompare(b[sort.active])
+          : b[sort.active].localeCompare(a[sort.active]);
+      })
+  });
 
-  private _search: Subject<any> = new BehaviorSubject([]);
-  search$: Observable<string[]> = this._search.asObservable();
 
   @ViewChild(MatTable) table!: MatTable<HeroInterface>;
 
@@ -59,33 +72,40 @@ export class HeroesListComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.heroService.load();
+    this.loadCourses();
 
-    this.heroData$ = this.heroService.data$;
+    // this.heroService.load();
 
-    this.data$ = combineLatest(
-      this.heroData$,
-      this.sort$,
-      this.search$,
-    ).pipe(
-      map(([data, sort, search]) => {
-        return data
-          .filter(d => !search.length || search.includes(d.nameLabel))
-          .sort((a: any, b: any) => {
-          return sort.direction === 'asc'
-            ? a[sort.active].localeCompare(b[sort.active])
-            : b[sort.active].localeCompare(a[sort.active]);
-        });
-      }),
-    );
+    // this.heroData$ = this.heroService.data$;
 
-    this.data$.subscribe(() => {
-      this.table?.renderRows();
-    });
+    // effect(() => {
+    //   console.log(`beginnersList: `, this.advancedCourses())
+    // })
+
+
+    // this.data$ = combineLatest(
+    //   this.heroData$,
+    //   this.sort$,
+    //   this.search$,
+    // ).pipe(
+    //   map(([data, sort, search]) => {
+    //     return data
+    //       .filter(d => !search.length || search.includes(d.nameLabel))
+    //       .sort((a: any, b: any) => {
+    //       return sort.direction === 'asc'
+    //         ? a[sort.active].localeCompare(b[sort.active])
+    //         : b[sort.active].localeCompare(a[sort.active]);
+    //     });
+    //   }),
+    // );
+    //
+    // this.data$.subscribe(() => {
+    //   this.table?.renderRows();
+    // });
   }
 
   onSortData(sort: Sort): void {
-    this._sort.next(sort);
+    this.sort.set(sort);
   }
 
   showDetails(row: HeroInterface): void {
@@ -122,10 +142,20 @@ export class HeroesListComponent implements OnInit{
       return [];
     }
 
-    return Array.from(new Set([ ...items && items.map(i => i.nameLabel) ]));
+    return Array.from(new Set([ ...items && items.map(i => i.nameLabel) ]))
   }
 
   setSearch(event: string[]): void {
-    this._search.next(event);
+    this.search.set(event);
+  }
+
+  async loadCourses() {
+    try {
+      const courses = await this.heroService.loadAllCourses();
+      this.heroes.set(courses);
+    }
+    catch(err) {
+      console.error(err);
+    }
   }
 }

@@ -3,7 +3,7 @@
         <mat-label>Search Name Hero</mat-label>
         <mat-chip-grid #chipGrid
                        aria-label="Name selection">
-            <mat-chip-row *ngFor="let name of search"
+            <mat-chip-row *ngFor="let name of search()"
                           (removed)="remove(name)">
                 {{name}}
                 <button [attr.aria-label]="'remove ' + name"

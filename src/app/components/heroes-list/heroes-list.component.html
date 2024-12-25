@@ -1,12 +1,10 @@
 <ng-container *ngIf="{
-  items: data$ | async,
+  items: advancedCourses(),
   heroData: heroData$ | async,
-  sort: sort$ | async,
-  search: search$ | async
 } as data">
 
-  <app-hero-search [search]="data.search || []"
-                   [options]="getNames(data.heroData)"
+  <app-hero-search [search]="search()"
+                   [options]="getNames(heroes())"
                    (setSearch)="setSearch($event)">
   </app-hero-search>
 
