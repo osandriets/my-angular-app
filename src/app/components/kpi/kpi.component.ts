@@ -31,4 +31,8 @@ export class KpiComponent {
   total(items: any):  number {
     return items.reduce((acc: number, num: any) => acc + num.value, 0);
   }
+
+  sortedItems(items: any[]): any[] {
+    return items.sort((a, b) => b.value - a.value);
+  }
 }

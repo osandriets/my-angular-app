@@ -6,7 +6,7 @@
 
   } @else {
     @if (total(items); as total) {
-      @for (item of items; track item.key; let idx = $index, e = $even) {
+      @for (item of sortedItems(items); track item.key; let idx = $index, e = $even) {
         @if (idx < 2) {
 
           {{ item.key }}: {{ item.value * 100/total | number: '1.0-0' }}%

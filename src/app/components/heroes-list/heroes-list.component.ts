@@ -15,6 +15,7 @@ import { HeroInterface } from '../../interfaces/hero.interface';
 import { HeroSearchComponent } from '../hero-search/hero-search.component';
 import { KpiComponent } from '../kpi/kpi.component';
 import { ChartComponent } from '../chart/chart.component';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-heroes-list',
@@ -44,7 +45,7 @@ export class HeroesListComponent implements OnInit{
   matSortActive = 'nameLabel';
   matSortDirection: SortDirection = 'asc';
 
-  advancedCourses = computed(() => {
+  filteredHeroes = computed(() => {
     const heroes = this.heroes();
     const sort = this.sort();
     const search = this.search();
@@ -61,38 +62,10 @@ export class HeroesListComponent implements OnInit{
   @ViewChild(MatTable) table!: MatTable<HeroInterface>;
 
   readonly heroService = inject(HeroService);
-
-  constructor(public dialog: MatDialog,
-              ) {
-  }
+  readonly dialog = inject(MatDialog);
 
   ngOnInit(): void {
     this.loadCourses().then();
-
-    // effect(() => {
-    //   console.log(`beginnersList: `, this.advancedCourses())
-    // })
-
-
-    // this.data$ = combineLatest(
-    //   this.heroData$,
-    //   this.sort$,
-    //   this.search$,
-    // ).pipe(
-    //   map(([data, sort, search]) => {
-    //     return data
-    //       .filter(d => !search.length || search.includes(d.nameLabel))
-    //       .sort((a: any, b: any) => {
-    //       return sort.direction === 'asc'
-    //         ? a[sort.active].localeCompare(b[sort.active])
-    //         : b[sort.active].localeCompare(a[sort.active]);
-    //     });
-    //   }),
-    // );
-    //
-    // this.data$.subscribe(() => {
-    //   this.table?.renderRows();
-    // });
   }
 
   onSortData(sort: Sort): void {
@@ -108,9 +81,37 @@ export class HeroesListComponent implements OnInit{
   onEdit(event: any, element = {}): void {
     event.stopPropagation();
 
-    this.dialog.open(HeroEditComponent, {
+    const dialogRef = this.dialog.open(HeroEditComponent, {
       data: element,
       width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // this.heroService.delete(result.uuid);
+
+        const heroes = this.heroes();
+
+        if(!result.uuid) {
+          this.heroes.set([
+            ...heroes,
+            {
+              ...result,
+              uuid: uuidv4(),
+            }
+          ]);
+        } else {
+          this.heroes.set([
+            ...heroes.map(h => {
+              if(h.uuid !== result.uuid) {
+                return h;
+              } else {
+                return result;
+              }
+            })
+          ]);
+        }
+      }
     });
   }
 
@@ -123,7 +124,13 @@ export class HeroesListComponent implements OnInit{
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.heroService.delete(result.uuid);
+        // this.heroService.delete(result.uuid);
+
+        const heroes = this.heroes();
+
+        this.heroes.set([
+          ...heroes.filter(h => h.uuid !== result.uuid)
+        ]);
       }
     });
   }

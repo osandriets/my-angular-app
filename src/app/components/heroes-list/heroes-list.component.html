@@ -1,4 +1,4 @@
-@if (advancedCourses(); as items) {
+@if (filteredHeroes(); as items) {
   <app-hero-search [search]="search()"
                    [options]="getNames(heroes())"
                    (setSearch)="setSearch($event)">
@@ -11,7 +11,7 @@
     </button>
   </div>
 
-  <table [dataSource]="advancedCourses() || []"
+  <table [dataSource]="items || []"
          [matSortActive]="matSortActive"
          [matSortDirection]="matSortDirection"
          mat-table
